@@ -1,5 +1,5 @@
 import { Router, Request, Response, NextFunction } from "express";
-import kvStoreService from "../services/storeService";
+import storeService from "../services/storeService";
 
 const router = Router();
 
@@ -21,7 +21,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
       return next(error);
     }
 
-    await kvStoreService.set(key, value, ttl);
+    await storeService.set(key, value, ttl);
 
     res.json({
       message: `Key '${key}' added`,
@@ -38,7 +38,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
 router.get("/:key", async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { key } = req.params;
-    const result = await kvStoreService.get(key);
+    const result = await storeService.get(key);
 
     if (!result) {
       const error = new Error("Key not found or expired");
@@ -58,7 +58,7 @@ router.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { key } = req.params;
-      const deleted = await kvStoreService.delete(key);
+      const deleted = await storeService.delete(key);
       if (deleted) {
         res.json({ message: `Key '${key}' deleted` });
       } else {
